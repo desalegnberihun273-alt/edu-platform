@@ -1,98 +1,367 @@
-
+<!DOCTYPE html>
 <html lang="am">
 <head>
     <meta charset="UTF-8">
-    <title>Edu Platform - Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduSphere - Multi-Role Learning Platform</title>
     <style>
-        :root { --primary: #3b82f6; --danger: #ef4444; --bg: #f1f5f9; --text: #1e293b; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background: var(--bg); color: var(--text); }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Inter', system-ui, sans-serif;
+        }
 
-        .login-container { display: flex; justify-content: center; align-items: center; min-height: 100vh; background: linear-gradient(135deg, #0f172a, #1e293b); }
-        .login-card { background: white; padding: 2rem; border-radius: 1rem; width: 350px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
-        
-        .app-container { display: flex; min-height: 100vh; }
-        .sidebar { width: 280px; background: #0f172a; color: white; padding: 1.5rem; position: fixed; height: 100vh; }
-        .main-content { margin-left: 280px; padding: 2rem; width: calc(100% - 280px); }
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --secondary: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark: #0f172a;
+            --gray-bg: #f1f5f9;
+            --text: #1e293b;
+            --border: #e2e8f0;
+        }
 
-        .card { background: white; padding: 1.5rem; border-radius: 1rem; margin-bottom: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        input, textarea, select { width: 100%; padding: 0.8rem; margin: 0.5rem 0; border: 1px solid #cbd5e1; border-radius: 0.5rem; }
-        
-        button { padding: 0.75rem 1.5rem; border-radius: 0.5rem; border: none; cursor: pointer; color: white; font-weight: 600; transition: opacity 0.2s; }
-        .btn-primary { background: var(--primary); }
-        .btn-danger { background: var(--danger); }
-        button:hover { opacity: 0.9; }
+        body {
+            background: var(--gray-bg);
+            color: var(--text);
+        }
 
-        .section { display: none; }
-        .section.active { display: block; animation: fadeIn 0.3s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* Login styles */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+        }
 
-        .course-card { background: #f8fafc; border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; }
-        .exam-question { background: #f1f5f9; padding: 1rem; margin: 1rem 0; border-radius: 0.5rem; }
+        .login-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 1.5rem;
+            width: 400px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            transition: transform 0.2s;
+        }
+
+        .login-card h2 {
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: #0f172a;
+        }
+
+        /* App container */
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: #0f172a;
+            color: white;
+            padding: 1.5rem;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .sidebar h2 {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--primary);
+            display: inline-block;
+            padding-bottom: 0.5rem;
+        }
+
+        .user-card {
+            background: #1e293b;
+            padding: 1rem;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .nav-item {
+            padding: 12px 16px;
+            margin: 6px 0;
+            cursor: pointer;
+            border-radius: 0.75rem;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .nav-item:hover {
+            background: #1e293b;
+            transform: translateX(5px);
+        }
+
+        .nav-item.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Main content */
+        .main-content {
+            margin-left: 280px;
+            padding: 2rem;
+            width: calc(100% - 280px);
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: box-shadow 0.2s;
+        }
+
+        .card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 0.75rem;
+            margin: 0.5rem 0 1rem 0;
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+        }
+
+        button {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+
+        /* Course & Exam cards */
+        .course-card, .exam-card, .user-card-item {
+            background: #f8fafc;
+            border-left: 4px solid var(--primary);
+            padding: 1rem;
+            border-radius: 0.75rem;
+            margin-bottom: 1rem;
+            transition: all 0.2s;
+        }
+
+        .course-card:hover, .exam-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .question-item {
+            background: #f1f5f9;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0.75rem;
+        }
+
+        /* Grade & stats */
+        .grade-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            background: var(--primary);
+            color: white;
+        }
+
+        .attempt-area {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px dashed var(--border);
+        }
+
+        .role-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .badge-admin { background: #8b5cf6; color: white; }
+        .badge-teacher { background: #f59e0b; color: white; }
+        .badge-student { background: #10b981; color: white; }
+
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar { width: 100%; position: relative; height: auto; }
+            .main-content { margin-left: 0; width: 100%; }
+            .app-container { flex-direction: column; }
+        }
     </style>
 </head>
 <body>
 
+<!-- LOGIN SCREEN -->
 <div id="loginContainer" class="login-container">
     <div class="login-card">
-        <h2 style="margin-bottom: 1rem; text-align: center;">📚 የመማሪያ መድረክ</h2>
-        <input type="text" id="loginName" placeholder="ሙሉ ስም">
+        <h2>📚 EduSphere Multi-Role Platform</h2>
+        <input type="text" id="loginName" placeholder="Full Name" autocomplete="off">
         <select id="loginRole">
-            <option value="admin">👑 አስተዳዳሪ (Admin)</option>
-            <option value="user">👤 ተማሪ (User)</option>
+            <option value="admin">👑 Admin (Full Control)</option>
+            <option value="teacher">👩‍🏫 Teacher (Create Courses/Exams)</option>
+            <option value="student">🧑‍🎓 Student (Enroll & Take Exams)</option>
         </select>
-        <button class="btn-primary" style="width: 100%;" onclick="login()">ግባ</button>
+        <button class="btn-primary" style="width: 100%; margin-top: 1rem;" onclick="login()">🚀 Enter Platform</button>
+        <p style="font-size: 12px; text-align: center; margin-top: 1rem; color: #64748b;">Demo: Admin | Teacher | Student roles</p>
     </div>
 </div>
 
+<!-- MAIN APP -->
 <div id="appContainer" style="display: none;">
     <div class="app-container">
         <div class="sidebar">
-            <h2 style="margin-bottom: 2rem;">📖 ኢዱ መድረክ</h2>
-            <div style="background: #1e293b; padding: 1rem; border-radius: 0.5rem; margin-bottom: 2rem;">
-                <p id="currentUserDisplay"></p>
-                <button class="btn-danger" style="width: 100%; margin-top: 1rem;" onclick="logout()">🚪 ውጣ</button>
+            <h2>📖 EduSphere</h2>
+            <div class="user-card">
+                <p id="currentUserDisplay" style="font-weight: bold;"></p>
+                <p id="userRoleDisplay" style="font-size: 12px; margin-top: 5px;"></p>
+                <button class="btn-danger" style="width: 100%; margin-top: 1rem;" onclick="logout()">🚪 Logout</button>
             </div>
             <nav>
-                <div style="padding: 10px; cursor: pointer;" onclick="showSection('courses')">📚 ኮርሶች</div>
-                <div style="padding: 10px; cursor: pointer;" onclick="showSection('exams')">📝 ፈተናዎች</div>
-                <div style="padding: 10px; cursor: pointer;" onclick="showSection('users')">👥 ተማሪዎች</div>
+                <div class="nav-item" onclick="showSection('courses')">📚 Courses & Enrollment</div>
+                <div class="nav-item" onclick="showSection('exams')">📝 Exams & Submissions</div>
+                <div class="nav-item" onclick="showSection('users')">👥 Users Management</div>
+                <div class="nav-item" onclick="showSection('grades')">📊 My Grades</div>
             </nav>
         </div>
 
         <div class="main-content">
+            <!-- Courses Section -->
             <div id="coursesSection" class="section">
-                <div class="card" id="adminCourseCtrl">
-                    <h3>➕ አዲስ ኮርስ</h3>
-                    <input type="text" id="courseName" placeholder="የኮርስ ስም">
-                    <textarea id="courseDesc" placeholder="መግለጫ"></textarea>
-                    <button class="btn-primary" onclick="addCourse()">አስቀምጥ</button>
+                <div class="card" id="adminTeacherCourseCtrl">
+                    <h3>➕ Add New Course (Admin/Teacher)</h3>
+                    <input type="text" id="courseName" placeholder="Course name (e.g., Cyber Security, HTML, CSS, JS, Python)">
+                    <textarea id="courseDesc" placeholder="Course description" rows="2"></textarea>
+                    <select id="courseCategory">
+                        <option value="Cyber Security">🔒 Cyber Security</option>
+                        <option value="HTML">🌐 HTML</option>
+                        <option value="CSS">🎨 CSS</option>
+                        <option value="JavaScript">⚡ JavaScript</option>
+                        <option value="Python">🐍 Python</option>
+                    </select>
+                    <button class="btn-primary" onclick="addCourse()">➕ Create Course</button>
                 </div>
                 <div class="card">
-                    <h3>📚 የኮርሶች ዝርዝር</h3>
+                    <h3>📚 Available Courses</h3>
                     <div id="coursesList"></div>
+                </div>
+                <div class="card" id="studentEnrollSection">
+                    <h3>📌 My Enrolled Courses</h3>
+                    <div id="enrolledCoursesList"></div>
                 </div>
             </div>
 
+            <!-- Exams Section -->
             <div id="examsSection" class="section">
-                <div class="card" id="adminExamCtrl">
-                    <h3>➕ አዲስ ፈተና</h3>
+                <div class="card" id="teacherExamCtrl">
+                    <h3>📝 Create New Exam (Teachers/Admin)</h3>
                     <select id="examCourseSelect"></select>
-                    <input type="text" id="examTitle" placeholder="የፈተና ርዕስ">
+                    <input type="text" id="examTitle" placeholder="Exam title">
                     <div id="questionList"></div>
-                    <button class="btn-primary" onclick="addQuestionField()">+ ጥያቄ ጨምር</button>
-                    <button class="btn-primary" style="background: green;" onclick="saveExam()">ፈተናውን አስቀምጥ</button>
+                    <button class="btn-secondary" onclick="addQuestionField()">+ Add Question</button>
+                    <button class="btn-primary" style="background: var(--secondary); margin-left: 10px;" onclick="saveExam()">💾 Save Exam</button>
                 </div>
                 <div class="card">
-                    <h3>📋 የፈተናዎች ዝርዝር</h3>
+                    <h3>📋 Available Exams</h3>
                     <div id="examsList"></div>
                 </div>
             </div>
 
+            <!-- Users Section -->
             <div id="usersSection" class="section">
+                <div class="card" id="adminUserCtrl">
+                    <h3>👥 Manage Users (Admin Only)</h3>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <input type="text" id="newUserName" placeholder="New user name" style="flex:1;">
+                        <select id="newUserRole">
+                            <option value="student">Student</option>
+                            <option value="teacher">Teacher</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                        <button class="btn-primary" onclick="addUserByAdmin()">Add User</button>
+                    </div>
+                </div>
                 <div class="card">
-                    <h3>👥 የተመዘገቡ ተማሪዎች/ተጠቃሚዎች</h3>
+                    <h3>👥 All Registered Users</h3>
                     <div id="usersList"></div>
+                </div>
+            </div>
+
+            <!-- Grades Section -->
+            <div id="gradesSection" class="section">
+                <div class="card">
+                    <h3>📊 My Exam Results</h3>
+                    <div id="gradesList"></div>
                 </div>
             </div>
         </div>
@@ -100,10 +369,19 @@
 </div>
 
 <script>
+    // Initial data structure with default courses (Cyber Security, HTML, CSS, JS, Python)
     let state = {
-        courses: JSON.parse(localStorage.getItem('courses')) || [],
+        courses: JSON.parse(localStorage.getItem('courses')) || [
+            { id: 101, name: "Cyber Security", desc: "Master cybersecurity fundamentals, ethical hacking, and network defense.", category: "Cyber Security" },
+            { id: 102, name: "HTML", desc: "Learn HTML5 semantic structure and modern web development basics.", category: "HTML" },
+            { id: 103, name: "CSS", desc: "CSS styling, flexbox, grid and responsive design.", category: "CSS" },
+            { id: 104, name: "JavaScript", desc: "JavaScript ES6+, DOM manipulation and interactive web apps.", category: "JavaScript" },
+            { id: 105, name: "Python", desc: "Python programming from basics to data structures and OOP.", category: "Python" }
+        ],
         exams: JSON.parse(localStorage.getItem('exams')) || [],
         users: JSON.parse(localStorage.getItem('users')) || [],
+        enrollments: JSON.parse(localStorage.getItem('enrollments')) || [], // { userId, courseId, enrolledAt }
+        examSubmissions: JSON.parse(localStorage.getItem('examSubmissions')) || [], // { userId, examId, score, answers, submittedAt }
         user: null,
         tempQuestions: []
     };
@@ -112,121 +390,338 @@
         localStorage.setItem('courses', JSON.stringify(state.courses));
         localStorage.setItem('exams', JSON.stringify(state.exams));
         localStorage.setItem('users', JSON.stringify(state.users));
+        localStorage.setItem('enrollments', JSON.stringify(state.enrollments));
+        localStorage.setItem('examSubmissions', JSON.stringify(state.examSubmissions));
+    }
+
+    // Helper to get user by name
+    function findOrCreateUser(name, role) {
+        let existing = state.users.find(u => u.name.toLowerCase() === name.toLowerCase());
+        if(existing) return existing;
+        let newUser = { id: Date.now(), name: name, role: role };
+        state.users.push(newUser);
+        updateStorage();
+        return newUser;
     }
 
     function login() {
         let name = document.getElementById('loginName').value.trim();
         let role = document.getElementById('loginRole').value;
-        if(!name) return alert("ስም ያስገቡ");
+        if(!name) return alert("Please enter your name");
         
-        state.user = { name, role };
-        // ተጠቃሚው ካልተመዘገበ ብቻ ጨምር
-        if (!state.users.find(u => u.name === name)) {
-            state.users.push(state.user);
-            updateStorage();
-        }
-
+        let userObj = findOrCreateUser(name, role);
+        state.user = { id: userObj.id, name: userObj.name, role: userObj.role };
+        
         document.getElementById('loginContainer').style.display = 'none';
         document.getElementById('appContainer').style.display = 'block';
-        document.getElementById('currentUserDisplay').innerText = `👋 ${name} (${role})`;
+        document.getElementById('currentUserDisplay').innerHTML = `👋 ${state.user.name}`;
+        document.getElementById('userRoleDisplay').innerHTML = `<span class="role-badge ${state.user.role === 'admin' ? 'badge-admin' : (state.user.role === 'teacher' ? 'badge-teacher' : 'badge-student')}">${state.user.role.toUpperCase()}</span>`;
         
-        document.getElementById('adminCourseCtrl').style.display = role === 'admin' ? 'block' : 'none';
-        document.getElementById('adminExamCtrl').style.display = role === 'admin' ? 'block' : 'none';
+        // Role-based UI visibility
+        let isAdmin = state.user.role === 'admin';
+        let isTeacher = state.user.role === 'teacher';
+        let isStudent = state.user.role === 'student';
+        
+        document.getElementById('adminTeacherCourseCtrl').style.display = (isAdmin || isTeacher) ? 'block' : 'none';
+        document.getElementById('teacherExamCtrl').style.display = (isAdmin || isTeacher) ? 'block' : 'none';
+        document.getElementById('adminUserCtrl').style.display = isAdmin ? 'block' : 'none';
+        document.getElementById('studentEnrollSection').style.display = isStudent ? 'block' : 'none';
+        
+        // populate course select for exams
+        populateExamCourseSelect();
         showSection('courses');
+    }
+
+    function populateExamCourseSelect() {
+        let select = document.getElementById('examCourseSelect');
+        select.innerHTML = '<option value="">-- Select Course --</option>' + state.courses.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
     }
 
     function showSection(id) {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.getElementById(id + 'Section').classList.add('active');
-        if(id === 'courses') renderCourses();
-        if(id === 'exams') renderExams();
-        if(id === 'users') renderUsers();
+        if(id === 'courses') { renderCourses(); renderEnrolledCourses(); }
+        if(id === 'exams') { renderExams(); }
+        if(id === 'users') { renderUsers(); }
+        if(id === 'grades') { renderGrades(); }
+        // update active nav style
+        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+        event?.target?.classList?.add('active');
     }
 
-    function renderUsers() {
-        let list = document.getElementById('usersList');
-        list.innerHTML = state.users.map(u => `
-            <div class="course-card">
-                <p><strong>ስም:</strong> ${u.name}</p>
-                <p><strong>ሚና:</strong> ${u.role === 'admin' ? '👑 አስተዳዳሪ' : '👤 ተማሪ'}</p>
-            </div>
-        `).join('');
-    }
-
-    // -- የተቀሩት ኮርሶች እና ፈተናዎች logic --
+    // Course Management
     function addCourse() {
-        let name = document.getElementById('courseName').value;
-        if(!name) return;
-        state.courses.push({ id: Date.now(), name, desc: document.getElementById('courseDesc').value });
+        if(state.user.role !== 'admin' && state.user.role !== 'teacher') return alert("Only Admin/Teacher can add courses!");
+        let name = document.getElementById('courseName').value.trim();
+        let desc = document.getElementById('courseDesc').value.trim();
+        let category = document.getElementById('courseCategory').value;
+        if(!name) return alert("Course name is required");
+        let newCourse = { id: Date.now(), name: name, desc: desc, category: category };
+        state.courses.push(newCourse);
+        updateStorage();
+        document.getElementById('courseName').value = '';
+        document.getElementById('courseDesc').value = '';
+        renderCourses();
+        populateExamCourseSelect();
+        alert("✅ Course added!");
+    }
+
+    function deleteCourse(courseId) {
+        if(state.user.role !== 'admin' && state.user.role !== 'teacher') return alert("Not authorized");
+        state.courses = state.courses.filter(c => c.id !== courseId);
+        // also remove enrollments for this course
+        state.enrollments = state.enrollments.filter(e => e.courseId !== courseId);
         updateStorage();
         renderCourses();
+        renderEnrolledCourses();
+        populateExamCourseSelect();
+    }
+
+    function enrollCourse(courseId) {
+        let already = state.enrollments.find(e => e.userId === state.user.id && e.courseId === courseId);
+        if(already) return alert("Already enrolled!");
+        state.enrollments.push({ userId: state.user.id, courseId: courseId, enrolledAt: new Date().toISOString() });
+        updateStorage();
+        renderEnrolledCourses();
+        renderCourses();
+        alert("Enrolled successfully!");
     }
 
     function renderCourses() {
-        let list = document.getElementById('coursesList');
-        list.innerHTML = state.courses.map(c => `
-            <div class="course-card">
-                <h4>${c.name}</h4>
-                <p>${c.desc}</p>
-                ${state.user.role === 'admin' ? `<button class="btn-danger" onclick="deleteCourse(${c.id})">ሰርዝ</button>` : ''}
-            </div>
-        `).join('');
+        let container = document.getElementById('coursesList');
+        let isStudent = state.user.role === 'student';
+        container.innerHTML = state.courses.map(course => {
+            let isEnrolled = state.enrollments.some(e => e.userId === state.user.id && e.courseId === course.id);
+            return `
+                <div class="course-card">
+                    <div class="flex-between">
+                        <h4>📖 ${course.name} <span style="font-size:12px; background:#e2e8f0; padding:2px 8px; border-radius:20px;">${course.category}</span></h4>
+                        ${(state.user.role === 'admin' || state.user.role === 'teacher') ? `<button class="btn-danger" style="padding:4px 12px;" onclick="deleteCourse(${course.id})">🗑️ Delete</button>` : ''}
+                    </div>
+                    <p>${course.desc}</p>
+                    ${isStudent && !isEnrolled ? `<button class="btn-secondary" style="margin-top:8px;" onclick="enrollCourse(${course.id})">📌 Enroll</button>` : ''}
+                    ${isStudent && isEnrolled ? `<span style="color: green; font-size:0.85rem;">✅ Enrolled</span>` : ''}
+                </div>
+            `;
+        }).join('');
     }
 
-    function deleteCourse(id) {
-        state.courses = state.courses.filter(c => c.id !== id);
-        updateStorage();
-        renderCourses();
+    function renderEnrolledCourses() {
+        if(state.user.role !== 'student') return;
+        let enrolledIds = state.enrollments.filter(e => e.userId === state.user.id).map(e => e.courseId);
+        let enrolledCourses = state.courses.filter(c => enrolledIds.includes(c.id));
+        let container = document.getElementById('enrolledCoursesList');
+        container.innerHTML = enrolledCourses.length ? enrolledCourses.map(c => `<div class="course-card"><strong>${c.name}</strong><br>${c.desc}</div>`).join('') : '<p>No courses enrolled yet. Enroll from above!</p>';
     }
 
-    // ፈተናዎች
+    // Exam Logic (Teacher/Admin create, Student take)
     function addQuestionField() {
-        state.tempQuestions.push({ question: "", option1: "", option2: "", correct: 1 });
+        state.tempQuestions.push({ text: "", options: ["", ""], correct: 0 });
         renderQuestionFields();
     }
 
     function renderQuestionFields() {
         let container = document.getElementById('questionList');
-        container.innerHTML = state.tempQuestions.map((q, i) => `
-            <div class="exam-question">
-                <input type="text" placeholder="ጥያቄ ${i+1}" onchange="state.tempQuestions[${i}].question = this.value">
-                <input type="text" placeholder="አማራጭ 1" onchange="state.tempQuestions[${i}].option1 = this.value">
-                <input type="text" placeholder="አማራጭ 2" onchange="state.tempQuestions[${i}].option2 = this.value">
+        container.innerHTML = state.tempQuestions.map((q, idx) => `
+            <div class="question-item">
+                <strong>Q${idx+1}</strong>
+                <input type="text" placeholder="Question text" value="${q.text}" onchange="state.tempQuestions[${idx}].text = this.value">
+                <input type="text" placeholder="Option A" value="${q.options[0]}" onchange="state.tempQuestions[${idx}].options[0] = this.value">
+                <input type="text" placeholder="Option B" value="${q.options[1]}" onchange="state.tempQuestions[${idx}].options[1] = this.value">
+                <select onchange="state.tempQuestions[${idx}].correct = parseInt(this.value)">
+                    <option value="0" ${q.correct === 0 ? 'selected' : ''}>Correct: Option A</option>
+                    <option value="1" ${q.correct === 1 ? 'selected' : ''}>Correct: Option B</option>
+                </select>
+                <button class="btn-danger" style="padding:4px 10px; margin-top:5px;" onclick="removeQuestion(${idx})">Remove</button>
             </div>
         `).join('');
+    }
+
+    function removeQuestion(index) {
+        state.tempQuestions.splice(index, 1);
+        renderQuestionFields();
     }
 
     function saveExam() {
-        let title = document.getElementById('examTitle').value;
-        if (!title || state.tempQuestions.length === 0) return alert("እባክህ ርዕስ እና ጥያቄዎችን ሙሉ");
-        state.exams.push({ id: Date.now(), title: title, questions: state.tempQuestions });
+        if(state.user.role !== 'admin' && state.user.role !== 'teacher') return alert("Only teachers/admins can create exams");
+        let courseId = document.getElementById('examCourseSelect').value;
+        let title = document.getElementById('examTitle').value.trim();
+        if(!courseId) return alert("Select a course");
+        if(!title) return alert("Enter exam title");
+        if(state.tempQuestions.length === 0) return alert("Add at least one question");
+        
+        let course = state.courses.find(c => c.id == courseId);
+        let exam = {
+            id: Date.now(),
+            courseId: parseInt(courseId),
+            courseName: course ? course.name : "Unknown",
+            title: title,
+            questions: state.tempQuestions.map(q => ({ text: q.text, options: [...q.options], correct: q.correct }))
+        };
+        state.exams.push(exam);
         updateStorage();
         state.tempQuestions = [];
-        document.getElementById('questionList').innerHTML = '';
         document.getElementById('examTitle').value = '';
-        alert("ፈተናው ተቀምጧል!");
+        document.getElementById('questionList').innerHTML = '';
+        alert("Exam created!");
         renderExams();
     }
 
+    function takeExam(examId) {
+        let exam = state.exams.find(e => e.id === examId);
+        if(!exam) return;
+        let alreadySubmitted = state.examSubmissions.find(sub => sub.userId === state.user.id && sub.examId === examId);
+        if(alreadySubmitted) return alert("You have already taken this exam!");
+        
+        let answers = [];
+        let answerHtml = '';
+        exam.questions.forEach((q, idx) => {
+            answerHtml += `
+                <div style="margin-bottom: 15px; padding:10px; background:#f8fafc; border-radius:8px;">
+                    <p><strong>${idx+1}. ${q.text}</strong></p>
+                    <label><input type="radio" name="q${idx}" value="0"> ${q.options[0]}</label><br>
+                    <label><input type="radio" name="q${idx}" value="1"> ${q.options[1]}</label>
+                </div>
+            `;
+        });
+        
+        let modal = document.createElement('div');
+        modal.id = 'examModal';
+        modal.style.position = 'fixed'; modal.style.top='0'; modal.style.left='0'; modal.style.width='100%'; modal.style.height='100%';
+        modal.style.background='rgba(0,0,0,0.7)'; modal.style.display='flex'; modal.style.alignItems='center'; modal.style.justifyContent='center'; modal.style.zIndex='1000';
+        modal.innerHTML = `
+            <div style="background:white; max-width:600px; width:90%; max-height:80vh; overflow:auto; border-radius:1rem; padding:1.5rem;">
+                <h3>📝 ${exam.title}</h3>
+                <form id="examForm">${answerHtml}</form>
+                <div style="display:flex; gap:10px; margin-top:20px;">
+                    <button class="btn-primary" onclick="submitExam(${exam.id})">Submit Exam</button>
+                    <button class="btn-danger" onclick="closeModal()">Cancel</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        window.currentExamId = exam.id;
+    }
+    
+    window.submitExam = function(examId) {
+        let exam = state.exams.find(e => e.id === examId);
+        if(!exam) return;
+        let score = 0;
+        exam.questions.forEach((q, idx) => {
+            let selected = document.querySelector(`input[name="q${idx}"]:checked`);
+            if(selected && parseInt(selected.value) === q.correct) score++;
+        });
+        let total = exam.questions.length;
+        let percentage = (score / total) * 100;
+        state.examSubmissions.push({
+            userId: state.user.id,
+            examId: examId,
+            examTitle: exam.title,
+            courseName: exam.courseName,
+            score: score,
+            total: total,
+            percentage: percentage,
+            submittedAt: new Date().toISOString()
+        });
+        updateStorage();
+        closeModal();
+        alert(`You scored ${score}/${total} (${percentage.toFixed(1)}%)`);
+        renderExams();
+        renderGrades();
+    };
+    
+    function closeModal() {
+        let modal = document.getElementById('examModal');
+        if(modal) modal.remove();
+    }
+    
+    function deleteExam(examId) {
+        if(state.user.role !== 'admin' && state.user.role !== 'teacher') return;
+        state.exams = state.exams.filter(e => e.id !== examId);
+        updateStorage();
+        renderExams();
+    }
+    
     function renderExams() {
-        let list = document.getElementById('examsList');
-        list.innerHTML = state.exams.map(e => `
-            <div class="course-card">
-                <h4>📝 ${e.title}</h4>
-                <p>ጥያቄዎች: ${e.questions.length}</p>
-                ${state.user.role === 'admin' ? `<button class="btn-danger" onclick="deleteExam(${e.id})">ሰርዝ</button>` : ''}
+        let container = document.getElementById('examsList');
+        let isCreator = (state.user.role === 'admin' || state.user.role === 'teacher');
+        let studentSubmissions = state.examSubmissions.filter(s => s.userId === state.user.id);
+        
+        container.innerHTML = state.exams.map(exam => {
+            let alreadyTaken = studentSubmissions.some(s => s.examId === exam.id);
+            return `
+                <div class="exam-card">
+                    <div class="flex-between">
+                        <h4>📋 ${exam.title} (${exam.courseName})</h4>
+                        ${isCreator ? `<button class="btn-danger" onclick="deleteExam(${exam.id})">Delete</button>` : ''}
+                    </div>
+                    <p>Questions: ${exam.questions.length}</p>
+                    ${state.user.role === 'student' && !alreadyTaken ? `<button class="btn-primary" onclick="takeExam(${exam.id})">Start Exam</button>` : ''}
+                    ${state.user.role === 'student' && alreadyTaken ? `<span class="grade-badge">✔️ Completed</span>` : ''}
+                    ${state.user.role !== 'student' ? `<small>📌 For students</small>` : ''}
+                </div>
+            `;
+        }).join('');
+        if(state.exams.length === 0) container.innerHTML = '<p>No exams created yet. Teachers/Admin can create exams.</p>';
+    }
+    
+    // Users Management (Admin)
+    function addUserByAdmin() {
+        if(state.user.role !== 'admin') return alert("Admin only");
+        let name = document.getElementById('newUserName').value.trim();
+        let role = document.getElementById('newUserRole').value;
+        if(!name) return alert("Enter name");
+        if(state.users.find(u => u.name.toLowerCase() === name.toLowerCase())) return alert("User exists");
+        state.users.push({ id: Date.now(), name: name, role: role });
+        updateStorage();
+        renderUsers();
+        document.getElementById('newUserName').value = '';
+    }
+    
+    function deleteUser(userId) {
+        if(state.user.role !== 'admin') return;
+        if(state.user.id === userId) return alert("Cannot delete yourself while logged in");
+        state.users = state.users.filter(u => u.id !== userId);
+        // also clean enrollments & submissions
+        state.enrollments = state.enrollments.filter(e => e.userId !== userId);
+        state.examSubmissions = state.examSubmissions.filter(s => s.userId !== userId);
+        updateStorage();
+        renderUsers();
+    }
+    
+    function renderUsers() {
+        let container = document.getElementById('usersList');
+        container.innerHTML = state.users.map(u => `
+            <div class="user-card-item flex-between">
+                <div><strong>${u.name}</strong> <span class="role-badge ${u.role === 'admin' ? 'badge-admin' : (u.role === 'teacher' ? 'badge-teacher' : 'badge-student')}">${u.role}</span></div>
+                ${state.user.role === 'admin' && u.id !== state.user.id ? `<button class="btn-danger" style="padding:4px 12px;" onclick="deleteUser(${u.id})">Remove</button>` : ''}
             </div>
         `).join('');
     }
-
-    function deleteExam(id) {
-        state.exams = state.exams.filter(e => e.id !== id);
-        updateStorage();
-        renderExams();
+    
+    function renderGrades() {
+        let submissions = state.examSubmissions.filter(s => s.userId === state.user.id);
+        let container = document.getElementById('gradesList');
+        if(submissions.length === 0) {
+            container.innerHTML = '<p>No exam submissions yet. Enroll in courses and take exams.</p>';
+            return;
+        }
+        container.innerHTML = submissions.map(s => `
+            <div class="course-card">
+                <div class="flex-between">
+                    <strong>📝 ${s.examTitle}</strong>
+                    <span class="grade-badge">${s.percentage.toFixed(1)}%</span>
+                </div>
+                <p>Course: ${s.courseName}</p>
+                <p>Score: ${s.score}/${s.total} | Submitted: ${new Date(s.submittedAt).toLocaleDateString()}</p>
+            </div>
+        `).join('');
     }
-
+    
     function logout() { location.reload(); }
-    renderCourses();
+    
+    // initial render fallbacks
+    window.onload = () => { if(state.user) { renderCourses(); renderExams(); } };
 </script>
 </body>
 </html>
