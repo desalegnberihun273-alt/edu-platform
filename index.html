@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="am">
+<head>
+    <meta charset="UTF-8">
+    <title>Edu Platform - Pro</title>
+    <style>
+        :root { --primary: #3b82f6; --danger: #ef4444; --bg: #f1f5f9; --text: #1e293b; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: var(--bg); color: var(--text); }
+
+        .login-container { display: flex; justify-content: center; align-items: center; min-height: 100vh; background: linear-gradient(135deg, #0f172a, #1e293b); }
+        .login-card { background: white; padding: 2rem; border-radius: 1rem; width: 350px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+        
+        .app-container { display: flex; min-height: 100vh; }
+        .sidebar { width: 280px; background: #0f172a; color: white; padding: 1.5rem; position: fixed; height: 100vh; }
+        .main-content { margin-left: 280px; padding: 2rem; width: calc(100% - 280px); }
+
+        .card { background: white; padding: 1.5rem; border-radius: 1rem; margin-bottom: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        input, textarea, select { width: 100%; padding: 0.8rem; margin: 0.5rem 0; border: 1px solid #cbd5e1; border-radius: 0.5rem; }
+        
+        button { padding: 0.75rem 1.5rem; border-radius: 0.5rem; border: none; cursor: pointer; color: white; font-weight: 600; transition: opacity 0.2s; }
+        .btn-primary { background: var(--primary); }
+        .btn-danger { background: var(--danger); }
+        button:hover { opacity: 0.9; }
+
+        .section { display: none; }
+        .section.active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .course-card { background: #f8fafc; border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; }
+        .exam-question { background: #f1f5f9; padding: 1rem; margin: 1rem 0; border-radius: 0.5rem; }
+    </style>
+</head>
+<body>
+
+<div id="loginContainer" class="login-container">
+    <div class="login-card">
+        <h2 style="margin-bottom: 1rem; text-align: center;">📚 የመማሪያ መድረክ</h2>
+        <input type="text" id="loginName" placeholder="ሙሉ ስም">
+        <select id="loginRole">
+            <option value="admin">👑 አስተዳዳሪ (Admin)</option>
+            <option value="user">👤 ተማሪ (User)</option>
+        </select>
+        <button class="btn-primary" style="width: 100%;" onclick="login()">ግባ</button>
+    </div>
+</div>
+
+<div id="appContainer" style="display: none;">
+    <div class="app-container">
+        <div class="sidebar">
+            <h2 style="margin-bottom: 2rem;">📖 ኢዱ መድረክ</h2>
+            <div style="background: #1e293b; padding: 1rem; border-radius: 0.5rem; margin-bottom: 2rem;">
+                <p id="currentUserDisplay"></p>
+                <button class="btn-danger" style="width: 100%; margin-top: 1rem;" onclick="logout()">🚪 ውጣ</button>
+            </div>
+            <nav>
+                <div style="padding: 10px; cursor: pointer;" onclick="showSection('courses')">📚 ኮርሶች</div>
+                <div style="padding: 10px; cursor: pointer;" onclick="showSection('exams')">📝 ፈተናዎች</div>
+                <div style="padding: 10px; cursor: pointer;" onclick="showSection('users')">👥 ተማሪዎች</div>
+            </nav>
+        </div>
+
+        <div class="main-content">
+            <div id="coursesSection" class="section">
+                <div class="card" id="adminCourseCtrl">
+                    <h3>➕ አዲስ ኮርስ</h3>
+                    <input type="text" id="courseName" placeholder="የኮርስ ስም">
+                    <textarea id="courseDesc" placeholder="መግለጫ"></textarea>
+                    <button class="btn-primary" onclick="addCourse()">አስቀምጥ</button>
+                </div>
+                <div class="card">
+                    <h3>📚 የኮርሶች ዝርዝር</h3>
+                    <div id="coursesList"></div>
+                </div>
+            </div>
+
+            <div id="examsSection" class="section">
+                <div class="card" id="adminExamCtrl">
+                    <h3>➕ አዲስ ፈተና</h3>
+                    <select id="examCourseSelect"></select>
+                    <input type="text" id="examTitle" placeholder="የፈተና ርዕስ">
+                    <div id="questionList"></div>
+                    <button class="btn-primary" onclick="addQuestionField()">+ ጥያቄ ጨምር</button>
+                    <button class="btn-primary" style="background: green;" onclick="saveExam()">ፈተናውን አስቀምጥ</button>
+                </div>
+                <div class="card">
+                    <h3>📋 የፈተናዎች ዝርዝር</h3>
+                    <div id="examsList"></div>
+                </div>
+            </div>
+
+            <div id="usersSection" class="section">
+                <div class="card">
+                    <h3>👥 የተመዘገቡ ተማሪዎች/ተጠቃሚዎች</h3>
+                    <div id="usersList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let state = {
+        courses: JSON.parse(localStorage.getItem('courses')) || [],
+        exams: JSON.parse(localStorage.getItem('exams')) || [],
+        users: JSON.parse(localStorage.getItem('users')) || [],
+        user: null,
+        tempQuestions: []
+    };
+
+    function updateStorage() {
+        localStorage.setItem('courses', JSON.stringify(state.courses));
+        localStorage.setItem('exams', JSON.stringify(state.exams));
+        localStorage.setItem('users', JSON.stringify(state.users));
+    }
+
+    function login() {
+        let name = document.getElementById('loginName').value.trim();
+        let role = document.getElementById('loginRole').value;
+        if(!name) return alert("ስም ያስገቡ");
+        
+        state.user = { name, role };
+        // ተጠቃሚው ካልተመዘገበ ብቻ ጨምር
+        if (!state.users.find(u => u.name === name)) {
+            state.users.push(state.user);
+            updateStorage();
+        }
+
+        document.getElementById('loginContainer').style.display = 'none';
+        document.getElementById('appContainer').style.display = 'block';
+        document.getElementById('currentUserDisplay').innerText = `👋 ${name} (${role})`;
+        
+        document.getElementById('adminCourseCtrl').style.display = role === 'admin' ? 'block' : 'none';
+        document.getElementById('adminExamCtrl').style.display = role === 'admin' ? 'block' : 'none';
+        showSection('courses');
+    }
+
+    function showSection(id) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id + 'Section').classList.add('active');
+        if(id === 'courses') renderCourses();
+        if(id === 'exams') renderExams();
+        if(id === 'users') renderUsers();
+    }
+
+    function renderUsers() {
+        let list = document.getElementById('usersList');
+        list.innerHTML = state.users.map(u => `
+            <div class="course-card">
+                <p><strong>ስም:</strong> ${u.name}</p>
+                <p><strong>ሚና:</strong> ${u.role === 'admin' ? '👑 አስተዳዳሪ' : '👤 ተማሪ'}</p>
+            </div>
+        `).join('');
+    }
+
+    // -- የተቀሩት ኮርሶች እና ፈተናዎች logic --
+    function addCourse() {
+        let name = document.getElementById('courseName').value;
+        if(!name) return;
+        state.courses.push({ id: Date.now(), name, desc: document.getElementById('courseDesc').value });
+        updateStorage();
+        renderCourses();
+    }
+
+    function renderCourses() {
+        let list = document.getElementById('coursesList');
+        list.innerHTML = state.courses.map(c => `
+            <div class="course-card">
+                <h4>${c.name}</h4>
+                <p>${c.desc}</p>
+                ${state.user.role === 'admin' ? `<button class="btn-danger" onclick="deleteCourse(${c.id})">ሰርዝ</button>` : ''}
+            </div>
+        `).join('');
+    }
+
+    function deleteCourse(id) {
+        state.courses = state.courses.filter(c => c.id !== id);
+        updateStorage();
+        renderCourses();
+    }
+
+    // ፈተናዎች
+    function addQuestionField() {
+        state.tempQuestions.push({ question: "", option1: "", option2: "", correct: 1 });
+        renderQuestionFields();
+    }
+
+    function renderQuestionFields() {
+        let container = document.getElementById('questionList');
+        container.innerHTML = state.tempQuestions.map((q, i) => `
+            <div class="exam-question">
+                <input type="text" placeholder="ጥያቄ ${i+1}" onchange="state.tempQuestions[${i}].question = this.value">
+                <input type="text" placeholder="አማራጭ 1" onchange="state.tempQuestions[${i}].option1 = this.value">
+                <input type="text" placeholder="አማራጭ 2" onchange="state.tempQuestions[${i}].option2 = this.value">
+            </div>
+        `).join('');
+    }
+
+    function saveExam() {
+        let title = document.getElementById('examTitle').value;
+        if (!title || state.tempQuestions.length === 0) return alert("እባክህ ርዕስ እና ጥያቄዎችን ሙሉ");
+        state.exams.push({ id: Date.now(), title: title, questions: state.tempQuestions });
+        updateStorage();
+        state.tempQuestions = [];
+        document.getElementById('questionList').innerHTML = '';
+        document.getElementById('examTitle').value = '';
+        alert("ፈተናው ተቀምጧል!");
+        renderExams();
+    }
+
+    function renderExams() {
+        let list = document.getElementById('examsList');
+        list.innerHTML = state.exams.map(e => `
+            <div class="course-card">
+                <h4>📝 ${e.title}</h4>
+                <p>ጥያቄዎች: ${e.questions.length}</p>
+                ${state.user.role === 'admin' ? `<button class="btn-danger" onclick="deleteExam(${e.id})">ሰርዝ</button>` : ''}
+            </div>
+        `).join('');
+    }
+
+    function deleteExam(id) {
+        state.exams = state.exams.filter(e => e.id !== id);
+        updateStorage();
+        renderExams();
+    }
+
+    function logout() { location.reload(); }
+    renderCourses();
+</script>
+</body>
+</html>
